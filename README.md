@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EventBook — Event Booking Application
+
+A full-featured desktop event booking app built with Next.js, React, TypeScript, and Redux Toolkit.
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 18+
+- npm
 
-```bash
+### Installation & Run
+
+git clone https://github.com/Rufiadah-Shafi/event-booking-app.git
+cd event-booking-app
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+src/
+├── app/
+│   ├── layout.tsx              # Root layout with Redux provider + Navbar
+│   ├── page.tsx                # Redirects / to /events
+│   ├── globals.css             # Global styles
+│   ├── events/
+│   │   ├── page.tsx            # /events — Event listing page
+│   │   └── [id]/page.tsx       # /events/[id] — Event details page
+│   └── booking-summary/
+│       └── page.tsx            # /booking-summary — Booking confirmation
+├── components/
+│   ├── Providers.tsx
+│   ├── EventCard.tsx
+│   ├── EventList.tsx
+│   ├── EventDetails.tsx
+│   ├── BookingForm.tsx
+│   └── BookingSummary.tsx
+├── store/
+│   ├── index.ts
+│   ├── hooks.ts
+│   └── eventsSlice.ts
+│   └── bookingSlice.ts
+├── lib/
+│   └── transformEvents.ts
+└── types/
+    └── index.ts
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Architecture Decisions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 1. Next.js App Router
+Used the App Router for file-based routing. Server components are used where possible, with "use client" only where interactivity is needed.
 
-## Deploy on Vercel
+### 2. Redux Toolkit for State Management
+- eventsSlice manages event list, selected event, loading and error states using createAsyncThunk for the API call.
+- bookingSlice manages booking details persisted until user returns to events.
+- Typed hooks ensure full TypeScript safety.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 3. List Virtualization (react-window)
+FixedSizeList from react-window only renders visible rows in the DOM, keeping performance optimal for 100+ events.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 4. Data Transformation Layer
+JSONPlaceholder /posts data is transformed into rich Event objects with dates, locations, prices, and categories. Keeps API logic isolated from UI components.
+
+### 5. TypeScript Throughout
+All components, state slices, and utilities are fully typed via shared interfaces in types/index.ts.
+
+---
+
+## Features
+
+- Event Listing Page with 100 events
+- List virtualization with react-window
+- Event Details Page (title, description, date, location, price, seats)
+- Booking Form with validation
+- Booking Summary Page
+- Redux Toolkit state management
+- Next.js routing (/events, /events/[id], /booking-summary)
+- TypeScript throughout
+- Clean, modern desktop UI
